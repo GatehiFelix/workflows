@@ -1,33 +1,32 @@
 import { Sequelize } from "sequelize";
-
 import connectDB from '../config/db.js';
-import User from './user.js';
+
+import Chat from "./chats.js";
 
 const sequelize = connectDB();
 
-const Bot = sequelize.define('Bot', {
+const ChatVariable = sequelize.define('ChatVariable', {
     id: {
         type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
-    },
-    user_id: {
+    }, 
+    chat_id: {
         type: Sequelize.BIGINT,
         allowNull: false,
         references: {
-            model: User,
+            model: Chat,
             key: 'id'
         }
-    },
-    name: {
+    }, 
+    variable_name: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    is_active: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+    variable_value: {
+        type: Sequelize.TEXT,
+        allowNull: false
     },
     created_at: {
         type: Sequelize.DATE,
@@ -38,14 +37,14 @@ const Bot = sequelize.define('Bot', {
         allowNull: false
     }
 }, {
-    tableName: 'bots',
+    tableName: 'chat_variables',
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
 })
 
-Bot.belongsTo(User, { foreignKey: 'user_id' });
 
+ChatVariable.belongsTo(Chat, { foreignKey: 'chat_id' });
 
-await Bot.sync();
-export default Bot;
+await ChatVariable.sync();
+export default ChatVariable;

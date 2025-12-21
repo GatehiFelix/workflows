@@ -1,33 +1,36 @@
-import { Sequelize } from "sequelize";
-
+import { Sequelize } from 'sequelize';
 import connectDB from '../config/db.js';
-import User from './user.js';
+import Workflow from './workflow.js';
 
 const sequelize = connectDB();
 
-const Bot = sequelize.define('Bot', {
+const WorkflowTrigger = sequelize.define('WorkflowTrigger', {
     id: {
         type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
-    user_id: {
+    workflow_id: {
         type: Sequelize.BIGINT,
         allowNull: false,
         references: {
-            model: User,
+            model: Workflow,
             key: 'id'
         }
     },
-    name: {
-        type: Sequelize.STRING,
+    trigger_type: {
+        type: Sequelize.ENUM('keyword', 'regex', 'intent', 'greeting'),
         allowNull: false
     },
-    is_active: {
-        type: Sequelize.BOOLEAN,
+    pattern: {
+        type: Sequelize.TEXT,
+        allowNull: false
+    },
+    priority: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: true
+        defaultValue: 0
     },
     created_at: {
         type: Sequelize.DATE,
@@ -38,14 +41,13 @@ const Bot = sequelize.define('Bot', {
         allowNull: false
     }
 }, {
-    tableName: 'bots',
+    tableName: 'workflow_triggers',
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
-})
+});
 
-Bot.belongsTo(User, { foreignKey: 'user_id' });
+WorkflowTrigger.belongsTo(Workflow, { foreignKey: 'workflow_id' });
 
-
-await Bot.sync();
-export default Bot;
+await WorkflowTrigger.sync();
+export default WorkflowTrigger;

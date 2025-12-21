@@ -1,51 +1,49 @@
-import { Sequelize } from "sequelize";
-
+import Sequelize from 'sequelize';
 import connectDB from '../config/db.js';
-import User from './user.js';
+
+import Chat from './chats.js';
 
 const sequelize = connectDB();
 
-const Bot = sequelize.define('Bot', {
+const Media = sequelize.define('Media', {
     id: {
         type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
-    },
-    user_id: {
+    }, 
+    chat_id: {
         type: Sequelize.BIGINT,
         allowNull: false,
         references: {
-            model: User,
+            model: Chat,
             key: 'id'
         }
     },
-    name: {
+    file_url: {
         type: Sequelize.STRING,
         allowNull: false
-    },
-    is_active: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+    }, 
+    file_type: {
+        type: Sequelize.STRING,
+        allowNull: false
     },
     created_at: {
         type: Sequelize.DATE,
         allowNull: false
-    },
+    }, 
     updated_at: {
         type: Sequelize.DATE,
         allowNull: false
     }
 }, {
-    tableName: 'bots',
+    tableName: 'media',
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
 })
 
-Bot.belongsTo(User, { foreignKey: 'user_id' });
+Media.belongsTo(Chat, { foreignKey: 'chat_id' });
 
-
-await Bot.sync();
-export default Bot;
+await Media.sync();
+export default Media;

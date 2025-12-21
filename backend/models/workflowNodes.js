@@ -1,33 +1,36 @@
 import { Sequelize } from "sequelize";
 
 import connectDB from '../config/db.js';
-import User from './user.js';
+import Workflow from './workflow.js';
 
 const sequelize = connectDB();
 
-const Bot = sequelize.define('Bot', {
+const WorkflowNode = sequelize.define('WorkflowNode', {
     id: {
         type: Sequelize.BIGINT,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
-    user_id: {
+    workflow_id: {
         type: Sequelize.BIGINT,
         allowNull: false,
         references: {
-            model: User,
+            model: Workflow,
             key: 'id'
         }
     },
-    name: {
+    node_type: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    is_active: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: true
+    config: {
+        type: Sequelize.JSON,
+        allowNull: false
+    },
+    position: {
+        type: Sequelize.JSON,
+        allowNull: true
     },
     created_at: {
         type: Sequelize.DATE,
@@ -38,14 +41,14 @@ const Bot = sequelize.define('Bot', {
         allowNull: false
     }
 }, {
-    tableName: 'bots',
+    tableName: 'workflow_nodes',
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",
+  
 })
 
-Bot.belongsTo(User, { foreignKey: 'user_id' });
+WorkflowNode.belongsTo(Workflow, { foreignKey: 'workflow_id' });
 
-
-await Bot.sync();
-export default Bot;
+await WorkflowNode.sync();
+export default WorkflowNode;

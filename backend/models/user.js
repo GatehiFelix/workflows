@@ -45,12 +45,10 @@ const User = sequelize.define('User', {
     },
     created_at: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
         allowNull: false
     },
     updated_at: {
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
         allowNull: false
     }
 },{
@@ -75,5 +73,7 @@ User.prototype.matchPassword = async function(enteredPassword) {
         throw new Error(error)
     }
 }
+
+await User.sync();  
 
 export default User;
