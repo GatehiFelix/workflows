@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/user.js';
+import  User  from '../models/user.js';
 
 class AuthService {
     /**
      * Registers a new user.
      */
-    async register(username, email, password) {
+    async register({username, email, password}) {
         const existingUser  = await User.findOne({ email });
         if(existingUser) {
             throw new Error('User already exists');
@@ -18,7 +18,7 @@ class AuthService {
         const user  = await User.create({
             username,
             email,
-            password: hashedPassword,
+            password_hash: hashedPassword,
         });
 
         const token = this.generateToken(user);
@@ -33,7 +33,7 @@ class AuthService {
     /**
      * Logs in an existing user.
      */
-    async login(email, password) {
+    async login({email, password}) {
         const user = await User.findOne({ where: { email }});
         if(!user) {
             throw new Error('Invalid email or password');
@@ -60,7 +60,7 @@ class AuthService {
      */
     async getUserById(userId) {
         const user = await User.findByPk(userId, {
-            attributes: { exclude: ['password'] }
+            attributes: { exclude: ['password_hash'] }
         });
 
         if(!user) {

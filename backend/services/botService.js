@@ -1,11 +1,11 @@
-import Bot from '../models/Bot.js';
-import Workflow from '../models/Workflow.js';
+import Bot from '../models/bot.js';
+import Workflow from '../models/workflow.js';
 
 class BotService {
     /**
      * Creates a new bot.
      */
-    async createBot(name, description, ownerId) {
+    async createBot(userId, {name, description}) {
         const bot = await Bot.create({
             user_id: userId,
             name,
@@ -28,7 +28,7 @@ class BotService {
                     attributes: ['id', 'name', 'is_active'],
                 },
             ],
-            order: [['createdAt', 'DESC']],
+            order: [['created_at', 'DESC']],
         });
 
         return bots;
@@ -37,7 +37,7 @@ class BotService {
     /**
      * get bot by id
      */
-    async getBotById(botId) {
+    async getBotById(botId, userId) {
         const bot = await Bot.findOne({
             where: { id: botId, user_id: userId },
             include: [
@@ -52,6 +52,22 @@ class BotService {
             throw new Error('Bot not found');
         }
 
+        return bot;
+    }
+
+        /**
+     * Update bot
+     */
+    async updateBot(botId, userId, updates) { //
+        const bot = await Bot.findOne({
+            where: { id: botId, user_id: userId },
+        });
+
+        if(!bot) {
+            throw new Error('Bot not found');
+        }
+
+        await bot.update(updates);
         return bot;
     }
 
