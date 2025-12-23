@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize";
 import connectDB from '../config/db.js';
 import Workflow from './workflow.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const WorkflowNode = sequelize.define('WorkflowNode', {
     id: {
@@ -16,7 +16,7 @@ const WorkflowNode = sequelize.define('WorkflowNode', {
         type: Sequelize.BIGINT,
         allowNull: false,
         references: {
-            model: Workflow,
+            model: 'workflows',
             key: 'id'
         }
     },

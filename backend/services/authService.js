@@ -7,18 +7,17 @@ class AuthService {
      * Registers a new user.
      */
     async register({username, email, password}) {
-        const existingUser  = await User.findOne({ email });
+        const existingUser  = await User.findOne({where: { email }});
         if(existingUser) {
             throw new Error('User already exists');
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+
 
         const user  = await User.create({
             username,
             email,
-            password_hash: hashedPassword,
+            password: password,
         });
 
         const token = this.generateToken(user);
@@ -36,6 +35,7 @@ class AuthService {
     async login({email, password}) {
         const user = await User.findOne({ where: { email }});
         if(!user) {
+            console.log('User not found with email:', email);
             throw new Error('Invalid email or password');
         }
 

@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize';
 import connectDB from '../config/db.js';
 import WorkflowNode from './workflowNodes.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const NodeButton = sequelize.define('NodeButton', {
     id: {

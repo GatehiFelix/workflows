@@ -1,37 +1,104 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import {
+    loginUser,
+    registerUser,
+    clearError
+} from "../reducers/authReducer.js";
 
 const LoginScreen = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    // Get auth state from Redux
+    const { loading, userInfo, error } = useSelector((state) => state.auth);
+
+    const [isLogin, setIsLogin] = useState(true);
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        if(userInfo) {
+            navigate("/chat");
+        }
+    }, [userInfo]);
+
+    // Clear error when switching between login/register
+    useEffect(() => {
+        if (error) {
+            dispatch(clearError());
+        }
+    }, [isLogin]);
+
+    const toggleMode = () => {
+        setIsLogin(!isLogin);
+        setName("");
+        setEmail("");
+        setPassword("");
+        setRememberMe(false);
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Email:", email);
-        console.log("Password:", password);
-        console.log("Remember Me:", rememberMe);
+
+        if (isLogin) {
+            // Login
+            dispatch(loginUser({ email, password }));
+        } else {
+            // Register
+            if (!name.trim()) {
+                alert("Please enter your name");
+                return;
+            }
+            dispatch(registerUser({ username: name, email, password }));
+        }
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-100 to-teal-200 flex items-center justify-start p-4 relative overflow-hidden">
             {/* WhatsApp-inspired background elements */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {/* Soft green circles */}
                 <div className="absolute top-10 right-20 w-96 h-96 bg-green-300/30 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-10 left-20 w-80 h-80 bg-emerald-400/20 rounded-full blur-3xl"></div>
                 <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-teal-300/25 rounded-full blur-3xl"></div>
             </div>
 
-            {/* Login card positioned to the left - INCREASED SIZE */}
+            {/* Login/Register card */}
             <div className="relative z-10 w-full max-w-lg ml-0 md:ml-20 lg:ml-32 bg-white/40 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/60">
                 <h1 className="text-5xl font-bold text-gray-800 mb-3">
-                    Welcome 👋
+                    {isLogin ? "Welcome 👋" : "Join Us 🚀"}
                 </h1>
                 <p className="text-gray-700 text-base mb-10">
-                    Login to access your FlowTalk account 
+                    {isLogin ? "Login to access your FlowTalk account" : "Create a new FlowTalk account to get started"}
                 </p>
 
-                <div>
+                {/* Error message */}
+                {error && (
+                    <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+                    {/* Name field - only for registration */}
+                    {!isLogin && (
+                        <div className="mb-6">
+                            <label className="block text-gray-700 text-sm font-medium mb-2">Name</label>
+                            <input 
+                                type="text" 
+                                placeholder="John Doe"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                className="w-full px-5 py-4 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-700 placeholder-gray-400"
+                            />
+                        </div>
+                    )}
+
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-medium mb-2">Email</label>
                         <input 
@@ -39,6 +106,7 @@ const LoginScreen = () => {
                             placeholder="user@flowtalk.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                             className="w-full px-5 py-4 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-700 placeholder-gray-400"
                         />
                     </div>
@@ -50,38 +118,68 @@ const LoginScreen = () => {
                             placeholder="********"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            required
+                            minLength={6}
                             className="w-full px-5 py-4 rounded-full bg-white/90 backdrop-blur-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-700 placeholder-gray-400"
                         />
                     </div>
 
-                    <div className="flex items-center justify-between mb-8">
-                        <label className="flex items-center text-sm text-gray-700">
-                            <input 
-                                type="checkbox"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="mr-2 rounded-sm"  
-                            />
-                            Remember me
-                        </label>
-                        <button onClick={(e) => e.preventDefault()} className="text-sm text-emerald-700 hover:text-emerald-800">
-                            Forgot password?
-                        </button>
-                    </div>
+                    {/* Remember me - only for login */}
+                    {isLogin && (
+                        <div className="flex items-center justify-between mb-8">
+                            <label className="flex items-center text-sm text-gray-700">
+                                <input 
+                                    type="checkbox"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="mr-2 rounded-sm"  
+                                />
+                                Remember me
+                            </label>
+                            <button type="button" className="text-sm text-emerald-700 hover:text-emerald-800">
+                                Forgot password?
+                            </button>
+                        </div>
+                    )}
 
                     <button
-                        onClick={handleSubmit}
-                        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-4 rounded-full transition duration-200 mb-8 shadow-lg text-base"
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-4 rounded-full transition duration-200 mb-6 shadow-lg text-base disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Login
+                        {loading ? (
+                            <span className="flex items-center justify-center">
+                                <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                {isLogin ? "Logging in..." : "Creating account..."}
+                            </span>
+                        ) : (
+                            isLogin ? "Login" : "Create Account"
+                        )}
                     </button>
+
+                    {/* Toggle between login and register */}
+                    <p className="text-center text-sm text-gray-700 mb-8">
+                        {isLogin ? "Don't have an account? " : "Already have an account? "}
+                        <button 
+                            type="button"
+                            onClick={toggleMode}
+                            className="text-emerald-700 hover:text-emerald-800 font-semibold"
+                        >
+                            {isLogin ? "Sign up" : "Login"}
+                        </button>
+                    </p>
 
                     <div className="relative mb-8">
                         <div className="absolute inset-0 flex items-center">
                             <div className="w-full border-t border-gray-300"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-3 bg-white/60 text-gray-600 backdrop-blur-sm rounded">or Sign in with Google</span> 
+                            <span className="px-3 bg-white/60 text-gray-600 backdrop-blur-sm rounded">
+                                or {isLogin ? "Sign in" : "Sign up"} with Google
+                            </span> 
                         </div>
                     </div>
 
@@ -97,7 +195,7 @@ const LoginScreen = () => {
                         </svg>
                         Continue with Google
                     </button>
-                </div>
+                </form>
             </div>
         </div>
     )

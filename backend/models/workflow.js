@@ -2,9 +2,8 @@ import { Sequelize } from "sequelize";
 
 import connectDB from '../config/db.js';
 import Bot from './bot.js';
-import WorkflowNode from './workflowNodes.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const Workflow = sequelize.define('Workflow', {
     id: {
@@ -28,10 +27,6 @@ const Workflow = sequelize.define('Workflow', {
     start_node: {
         type: Sequelize.BIGINT,
         allowNull: true,
-        references: {
-            model: WorkflowNode,
-            key: 'id'
-        }
     },
     is_active: {
         type: Sequelize.BOOLEAN,

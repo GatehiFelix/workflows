@@ -3,7 +3,7 @@ import Sequelize from 'sequelize';
 import connectDB from '../config/db.js';
 import Workflow from './workflow.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const WorkflowIntent = sequelize.define('WorkflowIntent', {
     id: {

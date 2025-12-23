@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Search, MessageSquare, Settings, Send, Paperclip, Smile, MoreVertical } from 'lucide-react';
+import { Search, MessageSquare, Settings, Send, Paperclip, Smile, MoreVertical, Phone, Video, } from 'lucide-react';
+
 
 const ChatScreen =() => {
     const [selectedChat, setSelectedChat] = useState(null);
@@ -205,7 +206,7 @@ const ChatScreen =() => {
                     </div>
                     <div className='flex items-center gap-2'>
                         <button className='p-2 hover:bg-gray-100 rounded-lg transistion'>
-                            <Vedio className="w-5 h-5 text-gray-600" />
+                            <Video className="w-5 h-5 text-gray-600" />
                         </button>
                         <button className='p-2 hover:bg-gray-100 rounded-lg transistion'>
                             <Phone className="w-5 h-5 text-gray-600" />

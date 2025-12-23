@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes.js';
 import botRoutes from './routes/botRoutes.js';
 import workflowRoutes from './routes/workflowRoutes.js';
 import workflowNodesRoutes from './routes/workflowNodesRoutes.js';
+import chatRoutes from './routes/chatRoutes.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/bots', botRoutes);
 app.use('/api/workflows', workflowRoutes);
 app.use('/api/workflows', workflowNodesRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.get('/health', (req, res) => {
     res.json({ status: 'ok', message: 'Server is healthy' });
@@ -33,7 +35,6 @@ app.get('/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const server = http.createServer(app);
 
 const PORT = process.env.PORT || 3000;
 

@@ -4,7 +4,7 @@ import connectDB from "../config/db.js";
 import WorkflowNode from "./workflowNodes.js";
 import Chat from "./chats.js";
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const Message = sequelize.define(
     "Message",

@@ -1,4 +1,4 @@
-import botService from "../services/botService";
+import botService from "../services/botService.js";
 import asyncHandler from "express-async-handler";
 
 

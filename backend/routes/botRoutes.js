@@ -17,3 +17,5 @@ router.get('/', getBotsController);
 router.get('/:id', getBotByIdController);
 router.put('/:id', updateBotController);
 router.delete('/:id', deleteBotController);
+
+export default router;

@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize";
 import connectDB from '../config/db.js';
 import User from './user.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const Bot = sequelize.define('Bot', {
     id: {

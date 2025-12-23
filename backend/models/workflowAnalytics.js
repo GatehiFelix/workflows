@@ -1,19 +1,20 @@
-import  Sequelize  from 'sequelize';
-import connectDB from '../config/db';
+import Sequelize from 'sequelize';
+import connectDB from '../config/db.js';
 
-const sequelize = connectDB();
+import Workflow from './workflow.js';
 
+const sequelize = await connectDB();
 
 const WorkflowAnalytics = sequelize.define(
   'WorkflowAnalytics',
   {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: Sequelize.BIGINT,
+      defaultValue: Sequelize.UUIDV4,
       primaryKey: true,
     },
     workflow_id: {
-      type: Sequelize.UUID,
+      type: Sequelize.BIGINT,
       allowNull: false,
       references: {
         model: 'workflows',
@@ -21,7 +22,7 @@ const WorkflowAnalytics = sequelize.define(
       },
     },
     chat_id: {
-      type: Sequelize.UUID,
+      type: Sequelize.BIGINT,
       allowNull: true,
       references: {
         model: 'chats',
@@ -29,7 +30,7 @@ const WorkflowAnalytics = sequelize.define(
       },
     },
     node_id: {
-      type: Sequelize.UUID,
+      type: Sequelize.BIGINT,
       allowNull: true,
       references: {
         model: 'workflow_nodes',
@@ -56,8 +57,8 @@ const WorkflowAnalytics = sequelize.define(
       allowNull: false,
     },
     updated_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
+      type: Sequelize.DATE,
+      allowNull: false,
     }
   },
   {
@@ -68,4 +69,8 @@ const WorkflowAnalytics = sequelize.define(
   }
 );
 
+
+WorkflowAnalytics.belongsTo(Workflow, { foreignKey: 'workflow_id' });
+
+await WorkflowAnalytics.sync();
 export default WorkflowAnalytics;

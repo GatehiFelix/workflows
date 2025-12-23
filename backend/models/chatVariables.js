@@ -3,7 +3,7 @@ import connectDB from '../config/db.js';
 
 import Chat from "./chats.js";
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const ChatVariable = sequelize.define('ChatVariable', {
     id: {

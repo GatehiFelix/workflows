@@ -5,7 +5,7 @@ import Bot from "./bot.js";
 import User from "./user.js";
 import workflowNodes from "./workflowNodes.js";
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const Chat = sequelize.define(
     "Chat",

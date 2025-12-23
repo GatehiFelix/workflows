@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 import connectDB from '../config/db.js';
 
-const sequelize = connectDB();
+const sequelize = await connectDB();
 
 const User = sequelize.define('User', {
     id: {

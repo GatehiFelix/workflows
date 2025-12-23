@@ -1,8 +1,8 @@
-import Workflow from '../models/Workflow.js';
+import Workflow from '../models/workflow.js';
 import WorkflowNode from '../models/workflowNodes.js';
 import NodeTransition from '../models/nodeTransitions.js';
 import WorkflowTrigger from '../models/workflowTrigger.js';
-import Bot from '../models/Bot.js';
+import Bot from '../models/bot.js';
 
 class WorkflowService {
     /**
